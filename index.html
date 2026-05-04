@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Las Missis Pastelería</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f1ed;
+    text-align: center;
+}
+
+/* HEADER */
+header {
+    background-color: #000;
+    color: white;
+    padding: 30px 20px;
+}
+
+header img {
+    width: 140px;
+}
+
+/* SECCIONES */
+.seccion {
+    padding: 40px 20px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 0.6s;
+}
+
+.seccion.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* PRODUCTOS */
+.productos {
+    background-color: #e9e3dd;
+}
+
+/* 🔥 LISTA CORREGIDA */
+ul {
+    list-style-position: inside;
+    padding: 0;
+    font-size: 18px;
+    display: inline-block;
+    text-align: left;
+}
+
+li {
+    margin: 8px 0;
+}
+
+/* GALERIA SCROLL */
+.galeria-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 10px;
+    scroll-snap-type: x mandatory;
+}
+
+.galeria-scroll img {
+    min-width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+    scroll-snap-align: start;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.galeria-scroll img:hover {
+    transform: scale(1.05);
+}
+
+/* SCROLLBAR */
+.galeria-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+.galeria-scroll::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+/* MODAL */
+#modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+}
+
+#modal img {
+    margin-top: 50px;
+    max-width: 90%;
+    border-radius: 10px;
+}
+
+/* CONTACTO */
+.contacto {
+    background-color: #dcd4cd;
+}
+
+/* BOTON */
+.btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 15px 25px;
+    background: linear-gradient(45deg, #25D366, #1ebe5d);
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    border-radius: 30px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    transform: scale(1.1);
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="seccion">
+    <img src="logo.png" alt="Logo">
+    <h1>EL ARTE DE LO DULCE</h1>
+</header>
+
+<div class="seccion productos">
+    <h2>🍰 Nuestros productos</h2>
+
+    <ul>
+        <li>Alfajores artesanales</li>
+        <li>Tortas personalizadas</li>
+        <li>Mesas dulces para eventos</li>
+        <li>Mini tortas</li>
+        <li>Brownies</li>
+        <li>Box dulces</li>
+    </ul>
+
+</div>
+
+<div class="seccion">
+    <h2>📸 Galería</h2>
+
+    <div class="galeria-scroll">
+        <img src="torta.jpg">
+        <img src="tortalolo.jpg">
+        <img src="talfajores.jpg">
+        <img src="pastafrola.jpg">
+        <img src="galletas.jpg">
+        <img src="box.jpg">
+    </div>
+</div>
+
+<div class="seccion">
+    <h2>📋 Pedidos</h2>
+    <p>Pedidos con 48 hs de anticipación</p>
+</div>
+
+<div class="seccion contacto">
+    <h2>📱 Contacto</h2>
+    <p>Instagram: @lasmissis.cakes</p>
+    <p>WhatsApp: 3874541211</p>
+
+    <a class="btn" href="https://wa.me/543874541211" target="_blank">
+        Hacer pedido por WhatsApp
+    </a>
+</div>
+
+<!-- MODAL -->
+<div id="modal" onclick="cerrarModal()">
+    <img id="imgGrande">
+</div>
+
+<script>
+
+// SCROLL CON MOUSE
+const slider = document.querySelector('.galeria-scroll');
+
+let isDown = false;
+let startX;
+let scrollLeft;
+
+slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+});
+
+slider.addEventListener('mouseleave', () => isDown = false);
+slider.addEventListener('mouseup', () => isDown = false);
+
+slider.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 2;
+    slider.scrollLeft = scrollLeft - walk;
+});
+
+// ZOOM IMAGEN
+const imagenes = document.querySelectorAll(".galeria-scroll img");
+const modal = document.getElementById("modal");
+const imgGrande = document.getElementById("imgGrande");
+
+imagenes.forEach(img => {
+    img.addEventListener("click", () => {
+        modal.style.display = "block";
+        imgGrande.src = img.src;
+    });
+});
+
+function cerrarModal() {
+    modal.style.display = "none";
+}
+
+// ANIMACION SCROLL
+const secciones = document.querySelectorAll(".seccion");
+
+window.addEventListener("scroll", () => {
+    const trigger = window.innerHeight * 0.85;
+
+    secciones.forEach(sec => {
+        const top = sec.getBoundingClientRect().top;
+
+        if (top < trigger) {
+            sec.classList.add("visible");
+        }
+    });
+});
+
+window.dispatchEvent(new Event("scroll"));
+
+</script>
+
+</body>
+</html>
